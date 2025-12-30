@@ -1,0 +1,142 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(StudyCastAI());
+}
+
+class StudyCastAI extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'StudyCast AI',
+      theme: ThemeData(
+        primaryColor: Color(0xFF1E3A8A),
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: PlannerScreen(),
+    );
+  }
+}
+
+class PlannerScreen extends StatefulWidget {
+  @override
+  _PlannerScreenState createState() => _PlannerScreenState();
+}
+
+class _PlannerScreenState extends State<PlannerScreen> {
+  String selectedClass = 'Class 9';
+  String selectedSubject = 'Science';
+  double hours = 4;
+  String studyPlan = '';
+
+  void generatePlan() {
+    setState(() {
+      studyPlan = '''
+📘 Study Plan for Today
+
+⏰ Total Time: ${hours.toInt()} hours
+
+1️⃣ Revise important concepts – ${hours * 0.4} hrs
+2️⃣ Practice questions – ${hours * 0.3} hrs
+3️⃣ Quick test – ${hours * 0.2} hrs
+4️⃣ Final revision – ${hours * 0.1} hrs
+
+🎯 Focus on high-weight topics only.
+🎧 Listen to audio revision at night.
+''';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('StudyCast AI'),
+        backgroundColor: Color(0xFF1E3A8A),
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Text('AI Smart Study Planner',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+            SizedBox(height: 20),
+
+            DropdownButtonFormField(
+              value: selectedClass,
+              items: ['Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12']
+                  .map((cls) =>
+                      DropdownMenuItem(value: cls, child: Text(cls)))
+                  .toList(),
+              onChanged: (value) {
+                setState(() => selectedClass = value.toString());
+              },
+              decoration: InputDecoration(labelText: 'Select Class'),
+            ),
+
+            SizedBox(height: 12),
+
+            DropdownButtonFormField(
+              value: selectedSubject,
+              items: ['Science', 'Maths', 'Physics', 'Chemistry']
+                  .map((sub) =>
+                      DropdownMenuItem(value: sub, child: Text(sub)))
+                  .toList(),
+              onChanged: (value) {
+                setState(() => selectedSubject = value.toString());
+              },
+              decoration: InputDecoration(labelText: 'Select Subject'),
+            ),
+
+            SizedBox(height: 20),
+
+            Text('Available Study Time (hours)',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+
+            Slider(
+              value: hours,
+              min: 1,
+              max: 10,
+              divisions: 9,
+              label: hours.toInt().toString(),
+              onChanged: (value) {
+                setState(() => hours = value);
+              },
+            ),
+
+            SizedBox(height: 10),
+
+            Center(
+              child: ElevatedButton(
+                onPressed: generatePlan,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF14B8A6),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 14),
+                ),
+                child: Text('Generate AI Study Plan',
+                    style: TextStyle(fontSize: 16)),
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            if (studyPlan.isNotEmpty)
+              Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(studyPlan),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
